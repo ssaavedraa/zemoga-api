@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Person {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  category    String
+  picture     String
+  lastUpdated DateTime @updatedAt
+  votes       Votes?
+}
+
+model Votes {
+  id       Int    @id @default(autoincrement())
+  positive Int
+  negative Int
+  personId Int    @unique
+  person   Person @relation(fields: [personId], references: [id])
+}
+
+enum Vote {
+  POSITIVE
+  NEGATIVE
+}
