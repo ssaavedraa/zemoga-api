@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 import VotesService from '../services/VotesService';
 
 class VotesController {
-  static postVote (req: Request, res: Response) {
+  static async postVote (req: Request, res: Response) {
     try {
       const data = req.body
 
-      const response = VotesService.postVote(data)
+      const response = await VotesService.postVote(data)
 
       return res.status(201).json(response)
     } catch (error) {
