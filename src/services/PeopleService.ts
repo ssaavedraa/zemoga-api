@@ -1,9 +1,25 @@
-import peopleData from '../mockData.json'
-import { PeopleData, TimeElapsed, Votes, VotesPercentage } from '../types/PeopleTypes'
+import { PrismaClient } from '@prisma/client'
+import { TimeElapsed, Votes, VotesPercentage } from '../types/PeopleTypes'
 
 class PeopleService {
-  // TODO Change to a database
-  static getPeople (): PeopleData[] {
+  private static readonly prismaClient: PrismaClient = new PrismaClient()
+
+  static async getPeople (): Promise<any[]> {
+    const peopleData = await this.prismaClient.person.findMany({
+      include: {
+        votes: {
+          select: {
+            negative: true,
+            positive: true
+          },
+
+        }
+      },
+      orderBy: {
+        id: 'asc'
+      }
+    })
+
     return peopleData.map((person) => {
       const timeElapsed = this.calculateTimeElapsed(person.lastUpdated)
       const timeElapsedMessage = this.buildLastUpdateMessage(timeElapsed)
@@ -18,7 +34,7 @@ class PeopleService {
     })
   }
 
-  static calculateTimeElapsed (lastUpdateDate: string): TimeElapsed {
+  static calculateTimeElapsed (lastUpdateDate: Date): TimeElapsed {
     const lastUpdate = new Date(lastUpdateDate)
     const now = new Date()
 
@@ -66,7 +82,7 @@ class PeopleService {
         message = `${timeElapsed.days} days${timeElapsed.days === 1 ? '' : 's'}`
         break
       case 'minutes':
-        message = `${timeElapsed.minutes < 5 ? 'few' : timeElapsed.minutes} minutes`
+        message = `${timeElapsed.minutes < 5 ? 'Few' : timeElapsed.minutes} minutes`
         break
     }
 
