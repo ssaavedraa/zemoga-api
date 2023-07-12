@@ -14,7 +14,7 @@ const allowCors = process.env.FRONTEND_URL
 app.use(express.json())
 
 app.use((_, res, next) => {
-  res.header('Access-Control-Allow-Origin', allowCors)
+  res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Credentials', 'true')
   res.header(
     'Access-Control-Allow-Headers',
