@@ -3,13 +3,15 @@ import express from 'express'
 
 import morgan from 'morgan'
 import router from './routes'
+import { preloadDatabase } from './utils/preloadDatabase'
 
 configDotenv()
 
 const app = express()
 
 const PORT = process.env.PORT || 3001
-const allowCors = process.env.FRONTEND_URL
+
+preloadDatabase()
 
 app.use(express.json())
 
